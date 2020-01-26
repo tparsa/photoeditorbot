@@ -1,0 +1,29 @@
+---
+
+- name: Get bot codes
+  git:
+    repo: https://github.com/tparsa/photoeditorbot.git
+    dest: ~/photo-editor-bot
+    force: true
+
+- name: replace ir.archives with archive
+  replace:
+    path: /etc/apt/sources.list
+    regexp: 'https://ir.'
+    replace: 'https://'
+  become: true
+
+- name: apt update
+  apt:
+    update_cache: yes
+  become: true
+
+- name: install python apt requirements
+  apt:
+    name: {{ python_apt_packages }}
+    state: present
+  become: true
+
+- name: install python pip requirements
+  pip:
+    requirements: ~/photo-editor-bot/requirements.txt
