@@ -33,7 +33,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             except Exception as e:
                 print(e)
 
-    async def on_image_message(self, msg):
+    async def on_chat_message(self, msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
         
         if content_type == 'photo':
@@ -41,13 +41,13 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self.edit(str(chat_id))
             bot.sendPhoto(chat_id, open(str(chat_id) + 'edited.png'))
         else:
-            bot.sendMessage('Yo')
+            bot.sendMessage(chat_id, 'Yo')
 
 TOKEN = sys.argv[1]  # get token from command-line
 
 bot = telepot.aio.DelegatorBot(TOKEN, [
     pave_event_space()(
-        per_chat_id(), create_open, MessageCounter, timeout=10),
+        per_chat_id(), create_open, PhotoEditor, timeout=10),
 ])
 
 loop = asyncio.get_event_loop()

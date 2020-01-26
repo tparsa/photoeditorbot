@@ -13,6 +13,13 @@
     replace: 'https://'
   become: true
 
+- name: Add python repository
+  apt_repository:
+    repo: ppa:fkrull/deadsnakes
+    state: present
+  become: true
+  ignore_errors: true
+
 - name: apt update
   apt:
     update_cache: yes
@@ -20,8 +27,13 @@
 
 - name: install python apt requirements
   apt:
-    name: {{ python_apt_packages }}
+    name: "{{ python_apt_packages }}"
     state: present
+  become: true
+
+- name: Change python to python3.6
+  shell:
+    cmd: 'update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1'
   become: true
 
 - name: install python pip requirements
