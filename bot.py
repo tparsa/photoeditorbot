@@ -26,7 +26,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 import numpy as np
                 img_array = np.array(image)
                 print(img_array)
-                for row in len(img_array):
+                for row in img_array:
                     for pixel in row:
                         grayscale = (0.3 * pixel[0]) + (0.59 * pixel[1]) + (0.11 * pixel[2])
                         pixel = [grayscale, grayscale, grayscale]
