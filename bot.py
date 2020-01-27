@@ -33,7 +33,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 print("Done GrayScaling Start Saving")
 
                 image = Image.fromarray(img_array, 'RGB')
-                img.save(image_filename + 'edited.png')
+                image.save(image_filename + 'edited.png')
             except Exception as e:
                 print("FUCK")
                 print(e)
