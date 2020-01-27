@@ -25,11 +25,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 print("Start GrayScaling")
                 import numpy as np
                 img_array = np.array(image)
-                print(img_array)
-                for row in img_array:
-                    for pixel in row:
-                        grayscale = (0.3 * pixel[0]) + (0.59 * pixel[1]) + (0.11 * pixel[2])
-                        pixel = [grayscale, grayscale, grayscale]
+                img_array = np.dot(img_array[...,:3], [0.2989, 0.5870, 0.1140])
                 print("Done GrayScaling Start Saving")
 
                 image = Image.fromarray(img_array, 'RGB')
@@ -46,7 +42,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             await bot.download_file(msg['photo'][-1]['file_id'], './' + str(chat_id) + '.png')
             print("dafuq")
             self.edit(str(chat_id))
-            await bot.sendPhoto(chat_id, open(str(chat_id) + 'edited.png'))
+            await bot.sendPhoto(chat_id, open(str(chat_id) + 'edited.png', 'rb'))
         else:
             print(content_type)
             bot.sendMessage(chat_id, 'Yo')
