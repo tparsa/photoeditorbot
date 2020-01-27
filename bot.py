@@ -25,7 +25,11 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 print("Start GrayScaling")
                 import numpy as np
                 img_array = np.array(image)
-                img_array = np.dot(img_array[...,:3], [0.2989, 0.5870, 0.1140])
+                print(img_array)
+                for row_idx, row in enumerate(img_array):
+                    for pixel_idx, pixel in enumerate(row):
+                        grayscale = (0.3 * pixel[0]) + (0.59 * pixel[1]) + (0.11 * pixel[2])
+                        img_array[row_idx][pixel_idx] = [grayscale, grayscale, grayscale]
                 print("Done GrayScaling Start Saving")
 
                 image = Image.fromarray(img_array, 'RGB')
