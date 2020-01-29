@@ -79,8 +79,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
 
         if content_type == 'text':
             await self.handle_text(chat_id, msg)
-        
-        if content_type == 'photo':
+        elif content_type == 'photo':
             print("Yo")
             await bot.download_file(msg['photo'][-1]['file_id'], './' + str(chat_id) + '.png')
             print("dafuq")
@@ -89,7 +88,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._decrease_remaining_edits(chat_id)
         else:
             print(content_type)
-            bot.sendMessage(chat_id, 'Yo')
+            await bot.sendMessage(chat_id, 'Yo')
 
 if __name__ == "__main__":
     TOKEN = sys.argv[1]  # get token from command-line
