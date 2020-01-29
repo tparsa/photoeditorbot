@@ -83,12 +83,15 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         if content_type == 'text':
             await self.handle_text(chat_id, msg)
         elif content_type == 'photo':
-            print("Yo")
-            await bot.download_file(msg['photo'][-1]['file_id'], './' + str(chat_id) + '.png')
-            print("dafuq")
-            self.edit(str(chat_id))
-            await bot.sendPhoto(chat_id, open(str(chat_id) + 'edited.png', 'rb'))
-            self._decrease_remaining_edits(chat_id)
+            if self._get_edits_left(chat_id) <= 0:
+                await bot.sendMessage(chat_id, 'متاسفانه شما از تمام اعتبار خود استفاده کرده اید. برای افزایش اعتبار می توانید از لینک زیر دوستان خود را دعوت کنید')
+            else:
+                print("Yo")
+                await bot.download_file(msg['photo'][-1]['file_id'], './' + str(chat_id) + '.png')
+                print("dafuq")
+                self.edit(str(chat_id))
+                await bot.sendPhoto(chat_id, open(str(chat_id) + 'edited.png', 'rb'))
+                self._decrease_remaining_edits(chat_id)
         else:
             print(content_type)
             await bot.sendMessage(chat_id, 'Yo')
