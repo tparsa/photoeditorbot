@@ -67,6 +67,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
     def _add_credit(self, chat_id):
         conn = db_tcp.getconn()
         c = conn.cursor()
+        print("""UPDATE users set edits_left = edits_left + {0} WHERE chat_id = '{1}'""".format(DEFAULT_CREDIT_INC, chat_id))
         c.execute("""UPDATE users set edits_left = edits_left + {0} WHERE chat_id = '{1}'""".format(DEFAULT_CREDIT_INC, chat_id))
         conn.commit()
 
@@ -78,7 +79,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._register(str(chat_id))
             inviter_chat_id = msg['text'][6:]
             self._add_credit(inviter_chat_id)
-            bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
             return bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
         elif msg['text'] == '/edits_left':
             return bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
