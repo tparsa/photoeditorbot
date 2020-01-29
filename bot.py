@@ -53,7 +53,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         print("Count: ", count)
         if count[0] == 0:
             c.execute("""INSERT INTO users(chat_id, edits_left) VALUES('{0}', {1})""".format(chat_id, STARTING_NUM_OF_EDITS))
-            c.commit()
+            conn.commit()
 
     def _get_edits_left(self, chat_id):
         conn = db_tcp.getconn()
@@ -74,6 +74,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         conn = db_tcp.getconn()
         c = conn.cursor()
         c.execute("""UPDATE users SET edits_left = edits_left - 1 WHERE chat_id = '{0}'""".format(chat_id))
+        conn.commit()
 
     async def on_chat_message(self, msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
