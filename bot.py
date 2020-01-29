@@ -7,6 +7,7 @@ from PIL import Image
 from psycopg2.pool import ThreadedConnectionPool
 
 STARTING_NUM_OF_EDITS = 5
+DEFAULT_CREDIT_INC = 2
 
 DNS = "postgresql://postgres:342|Klw,QSzk+@localhost/coloring_bot_db"
 db_tcp = ThreadedConnectionPool(1, 30, DNS)
@@ -63,10 +64,22 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         edits_left = c.fetchone()
         return edits_left[0]
 
-    def handle_text(self, chat_id, msg):
+    def _add_credit(self, chat_id):
+        conn = db_tcp.getconn()
+        c = conn.cursor()
+        c.execute("""UPDATE users set edits_left = edits_left + {0} WHERE chat_id = '{1}'""".format(DEFAULT_CREDIT_INC, chat_id))
+        conn.commit()
+
+    async def handle_text(self, chat_id, msg):
         if msg['text'] == '/start':
             self._register(str(chat_id))
             return bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+        elif msg['text'][:6] == '/start':
+            self._register(str(chat_id))
+            inviter_chat_id = msg['text'][6:]
+            self._add_credit(inviter_chat_id)
+            bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+            return bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
         elif msg['text'] == '/edits_left':
             return bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
 
@@ -85,6 +98,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         elif content_type == 'photo':
             if self._get_edits_left(chat_id) <= 0:
                 await bot.sendMessage(chat_id, 'متاسفانه شما از تمام اعتبار خود استفاده کرده اید. برای افزایش اعتبار می توانید از لینک زیر دوستان خود را دعوت کنید')
+                await bot.sendMessage(chat_id, 'https://telegram.me/{0}?start={1}'.format(BOT_NAME, chat_id))
             else:
                 print("Yo")
                 await bot.download_file(msg['photo'][-1]['file_id'], './' + str(chat_id) + '.png')
@@ -98,6 +112,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
 
 if __name__ == "__main__":
     TOKEN = sys.argv[1]  # get token from command-line
+    BOT_NAME = sys.argv[2] # get bot name from command-line
 
     bot = telepot.aio.DelegatorBot(TOKEN, [
         pave_event_space()(
