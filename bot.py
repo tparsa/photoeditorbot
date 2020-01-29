@@ -74,15 +74,15 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
     async def handle_text(self, chat_id, msg):
         if msg['text'] == '/start':
             self._register(str(chat_id))
-            return bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
         elif msg['text'][:6] == '/start':
             self._register(str(chat_id))
             inviter_chat_id = msg['text'][7:]
             self._add_credit(inviter_chat_id)
             await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
-            return bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
+            await bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
         elif msg['text'] == '/edits_left':
-            return bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
+            await bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
 
     def _decrease_remaining_edits(self, chat_id):
         conn = db_tcp.getconn()
