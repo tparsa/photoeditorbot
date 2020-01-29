@@ -50,6 +50,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
 
         c.execute("""SELECT count(*) from users WHERE chat_id = '{0}'""".format( chat_id ))
         count = c.fetchone()
+        print("Count: ", count)
         if count[0] == 0:
             c.execute("""INSERT INTO users(chat_id, edits_left) VALUES('{0}', {1})""".format(chat_id, STARTING_NUM_OF_EDITS))
 
