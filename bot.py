@@ -10,7 +10,6 @@ STARTING_NUM_OF_EDITS = 5
 
 DNS = "postgresql://postgres:342|Klw,QSzk+@localhost/coloring_bot_db"
 db_tcp = ThreadedConnectionPool(1, 30, DNS)
-bot = None
 
 class MessageCounter(telepot.aio.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
@@ -63,12 +62,11 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         return edits_left[0]
 
     def handle_text(self, chat_id, msg):
-        global bot
         if msg['text'] == '/start':
             self._register(str(chat_id))
-            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+            bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
         elif msg['text'] == '/edits_left':
-            await bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
+            bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
 
     def _decrease_remaining_edits(self, chat_id):
         conn = db_tcp.getconn()
@@ -80,7 +78,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         print(content_type, chat_type, chat_id, msg)
 
         if content_type == 'text':
-            self.handle_text(chat_id, msg)
+            await self.handle_text(chat_id, msg)
         
         if content_type == 'photo':
             print("Yo")
