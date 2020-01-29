@@ -45,16 +45,16 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 print(e)
 
     def _register(self, chat_id):
-        conn = db_tcp.get_conn()
+        conn = db_tcp.getconn()
         c = conn.cursor()
 
-        c.execute("""SELECT count(*) from users WHERE chat_id = %s""", chat_id)
+        c.execute("""SELECT count(*) from users WHERE chat_id = ${0}""".format( chat_id ))
         count = c.fetchone()
         if count[0] == 0:
-            c.execute("""INSERT INTO users(chat_id, edits_left) VALUES(%s, %d))""", (chat_id, STARTING_NUM_OF_EDITS))
+            c.execute("""INSERT INTO users(chat_id, edits_left) VALUES(${0}, ${1}))""".format(chat_id, STARTING_NUM_OF_EDITS))
 
     def _get_edits_left(self, chat_id):
-        conn = db_tcp.get_conn()
+        conn = db_tcp.getconn()
         c = conn.cursor()
 
         c.execute("""SELECT edits_left from users WHERE chat_id = %s""", chat_id)
@@ -69,7 +69,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
 
     def _decrease_remaining_edits(self, chat_id):
-        conn = db_tcp.get_conn()
+        conn = db_tcp.getconn()
         c = conn.cursor()
         c.execute("""UPDATE users SET edits_left = edits_left - 1 WHERE chat_id = %s""", chat_id)
 
