@@ -4,6 +4,12 @@ import telepot
 from telepot.aio.loop import MessageLoop
 from telepot.aio.delegate import pave_event_space, per_chat_id, create_open
 from PIL import Image
+from psycopg2.pool import ThreadedConnectionPool
+
+STARTING_NUM_OF_EDITS = 5
+
+DNS = "postgresql://postgres:342|Klw,QSzk+@localhost/coloring_bot_db"
+db_tcp = ThreadedConnectionPool(1, 30, DNS)
 
 class MessageCounter(telepot.aio.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
@@ -38,8 +44,37 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 print("FUCK")
                 print(e)
 
+    def _register(self, chat_id):
+        conn = db_tcp.get_conn()
+        c = conn.cursor()
+
+        c.execute("""SELECT count(*) from users WHERE chat_id = %s""", chat_id)
+        count = c.fetchone()
+        if count[0] == 0:
+            c.execute("""INSERT INTO users(chat_id, edits_left) VALUES(%s, %d))""", (chat_id, STARTING_NUM_OF_EDITS))
+
+    def _get_edits_left(self, chat_id):
+        conn = db_tcp.get_conn()
+        c = conn.cursor()
+
+        c.execute("""SELECT edits_left from users WHERE chat_id = %s""", chat_id)
+        edits_left = c.fetchone()
+        return edits_left[0]
+
+    def handle_text(self, chat_id, msg):
+        if msg['text'] == '/start':
+            self._register(chat_id)
+            bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+        elif msg['text'] == '/edits_left':
+            bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
+        
+
     async def on_chat_message(self, msg):
         content_type, chat_type, chat_id = telepot.glance(msg)
+        print(content_type, chat_type, chat_id, msg)
+
+        if content_type == 'text':
+            self.handle_text(chat_id, msg)
         
         if content_type == 'photo':
             print("Yo")
@@ -51,15 +86,17 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             print(content_type)
             bot.sendMessage(chat_id, 'Yo')
 
-TOKEN = sys.argv[1]  # get token from command-line
+if __name__ == "__main__":
+    TOKEN = sys.argv[1]  # get token from command-line
 
-bot = telepot.aio.DelegatorBot(TOKEN, [
-    pave_event_space()(
-        per_chat_id(), create_open, PhotoEditor, timeout=10),
-])
+    bot = telepot.aio.DelegatorBot(TOKEN, [
+        pave_event_space()(
+            per_chat_id(), create_open, PhotoEditor, timeout=10),
+    ])
 
-loop = asyncio.get_event_loop()
-loop.create_task(MessageLoop(bot).run_forever())
-print('Listening ...')
+    loop = asyncio.get_event_loop()
+    loop.create_task(MessageLoop(bot).run_forever())
 
-loop.run_forever()
+    print('Listening ...')
+
+    loop.run_forever()

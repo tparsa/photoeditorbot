@@ -2,3 +2,9 @@ python_apt_packages:
   - python3.6
   - python3-pip
   - python3-setuptools
+
+postgres_apt_packages:
+  - postgresql
+  - postgresql-contrib
+  - python3-psycopg2
+  - libpq-dev

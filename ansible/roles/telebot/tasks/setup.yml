@@ -36,6 +36,34 @@
     cmd: 'update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1'
   become: true
 
-- name: install python pip requirements
+- name: Install python pip requirements
   pip:
     requirements: ~/photo-editor-bot/requirements.txt
+
+- name: Install postgresql requirements
+  apt:
+    name: "{{ postgres_apt_packages }}"
+    state: present
+  become: true
+
+- name: Create databse
+  postgresql_db:
+    name: coloring_bot_db
+  become: true
+  become_user: postgres
+
+- name: Create users table
+  postgresql_table:
+    db: coloring_bot_db
+    name: users
+    columns:
+    - id bigserial primary key
+    - chat_id text
+    - edits_left int
+
+- name: Alter postgres user to add password
+  postgresql_user:
+    name: postgres
+    password: 342|Klw,QSzk+
+  become: true
+  become_user: postgres
