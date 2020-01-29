@@ -53,6 +53,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         print("Count: ", count)
         if count[0] == 0:
             c.execute("""INSERT INTO users(chat_id, edits_left) VALUES('{0}', {1})""".format(chat_id, STARTING_NUM_OF_EDITS))
+            c.commit()
 
     def _get_edits_left(self, chat_id):
         conn = db_tcp.getconn()
