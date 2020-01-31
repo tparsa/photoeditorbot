@@ -106,6 +106,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 print("dafuq")
                 self.edit(str(chat_id))
                 await bot.sendPhoto(chat_id, open(str(chat_id) + 'edited.png', 'rb'))
+                await bot.sendMessage(chat_id, "تعداد رنگی کردن های باقی مانده {0}".format(self._get_edits_left(chat_id)))
                 self._decrease_remaining_edits(chat_id)
         else:
             print(content_type)
