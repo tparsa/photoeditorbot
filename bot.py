@@ -90,7 +90,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             await bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
         elif msg['text'] == '/edits_left' or msg['text'] == 'تعداد رنگی کردن های باقی مانده':
             await bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
-        elif msg['text'] == '/invitation_link' or 'لینک دعوت دوستان':
+        elif msg['text'] == '/invitation_link' or msg['text'] == 'لینک دعوت دوستان':
             await bot.sendMessage(chat_id, 'https://telegram.me/{0}?start={1}'.format(BOT_NAME, chat_id))
         elif msg['text'][:11] == '/add_credit':
             credit_code = msg['text'][12:]
