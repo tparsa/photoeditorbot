@@ -87,7 +87,14 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._register(str(chat_id))
             inviter_chat_id = msg['text'][7:]
             self._add_credit(inviter_chat_id)
-            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
+                keyboard=[
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده'),
+                     KeyboardButton(text='لینک دعوت دوستان'),
+                     KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده'),
+                     KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
+                ]
+            ))
             await bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
         elif msg['text'] == '/edits_left' or msg['text'] == 'تعداد رنگی کردن های باقی مانده':
             await bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
@@ -114,7 +121,16 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 c.execute("""UPDATE users set edits_left = edits_left + {0},credit_code=NULL,credit_code_effect=0 WHERE chat_id = '{1}'""".format(credit_effect, chat_id))
                 conn.commit()
         elif msg['text'] == 'غیر فعال کردن دکمه ها و استفاده از دستورات':
-            await bot.sendMessage(chat_id, text='دستورات فعال شدند', reply_markup=ReplyKeyboardRemove)
+            await bot.sendMessage(chat_id, text='دستورات فعال شدند', reply_markup=ReplyKeyboardRemove())
+        elif msg['text'] == '/activate_keyboard':
+            await bot.sendMessage(chat_id, 'دکمه ها فعال شدند', reply_markup=ReplyKeyboardMarkup(
+                keyboard=[
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده'),
+                     KeyboardButton(text='لینک دعوت دوستان'),
+                     KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده'),
+                     KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
+                ]
+            ))
 
 
     def _decrease_remaining_edits(self, chat_id):
