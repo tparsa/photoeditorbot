@@ -81,7 +81,8 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                      KeyboardButton(text='لینک دعوت دوستان'),
                      KeyboardButton(text='اضافه کردن تعداد \nرنگی کردن های باقی مانده'),
                      KeyboardButton(text='غیر فعال کردن دکمه ها\n و استفاده از دستورات')]
-                ]
+                ],
+                resize_keyboard=True
             ))
         elif msg['text'][:6] == '/start':
             self._register(str(chat_id))
