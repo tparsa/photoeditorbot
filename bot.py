@@ -106,8 +106,10 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 c.execute("""UPDATE users set credit_code = NULL from users WHERE chat_id = '{0}'""".format(chat_id))
                 c.commit()
         elif msg['text'] == 'اضافه کردن تعداد رنگی کردن های باقی مانده':
+            conn = db_tcp.getconn()
+            c = conn.cursor()
             c.execute("""SELECT credit_code from users WHERE chat_id = '{0}'""".format(chat_id))
-            if c.fetchone() is not None:
+            if c.fetchone()[0] is not None:
                 c.execute("""SELECT credit_code_effect from users WHERE chat_id = '{0}'""".format(chat_id))
                 credit_effect = c.fetchone()[0]
                 c.execute("""UPDATE users set edits_left = edits_left + {0} WHERE chat_id = '{1}'""".format(credit_effect, chat_id))
