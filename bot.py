@@ -77,8 +77,8 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._register(str(chat_id))
             await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
                 keyboard=[
-                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده', request_location='/edits_left'),
-                     KeyboardButton(text='لینک دعوت دوستان', request_location='/invitation_link')]
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده', request_contact='/edits_left'),
+                     KeyboardButton(text='لینک دعوت دوستان', request_contact='/invitation_link')]
                 ]
             ))
         elif msg['text'][:6] == '/start':

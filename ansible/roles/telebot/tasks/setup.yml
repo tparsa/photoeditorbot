@@ -84,3 +84,5 @@
     - edits_left int
     - credit_code text
     - credit_code_effect int
+  become: true
+  become_user: postgres
