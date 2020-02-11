@@ -77,10 +77,10 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._register(str(chat_id))
             await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
                 keyboard=[
-                    [KeyboardButton(text='تعداد رنگی کردن های\n باقی مانده'),
-                     KeyboardButton(text='لینک دعوت دوستان'),
-                     KeyboardButton(text='اضافه کردن تعداد \nرنگی کردن های باقی مانده'),
-                     KeyboardButton(text='غیر فعال کردن دکمه ها\n و استفاده از دستورات')]
+                    [KeyboardButton(text='تعداد رنگی کردن های\n باقی مانده')],
+                    [KeyboardButton(text='لینک دعوت دوستان')],
+                    [KeyboardButton(text='اضافه کردن تعداد \nرنگی کردن های باقی مانده')],
+                    [KeyboardButton(text='غیر فعال کردن دکمه ها\n و استفاده از دستورات')]
                 ],
                 resize_keyboard=True
             ))
