@@ -78,7 +78,8 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
                 keyboard=[
                     [KeyboardButton(text='تعداد رنگی کردن های باقی مانده'),
-                     KeyboardButton(text='لینک دعوت دوستان')]
+                     KeyboardButton(text='لینک دعوت دوستان'),
+                     KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده')]
                 ]
             ))
         elif msg['text'][:6] == '/start':
@@ -90,7 +91,7 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         elif msg['text'] == '/edits_left' or msg['text'] == 'تعداد رنگی کردن های باقی مانده':
             await bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
         elif msg['text'] == '/invitation_link' or 'لینک دعوت دوستان':
-            bot.sendMessage(chat_id, 'https://telegram.me/{0}?start={1}'.format(BOT_NAME, chat_id))
+            await bot.sendMessage(chat_id, 'https://telegram.me/{0}?start={1}'.format(BOT_NAME, chat_id))
         elif msg['text'][:11] == '/add_credit':
             credit_code = msg['text'][12:]
             conn = db_tcp.getconn()
@@ -98,6 +99,15 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             c.execute("""SELECT credit_code from users WHERE chat_id = '{0}'""".format(chat_id))
             actual_credit_code = c.fetchone()[0]
             if credit_code == actual_credit_code:
+                c.execute("""SELECT credit_code_effect from users WHERE chat_id = '{0}'""".format(chat_id))
+                credit_effect = c.fetchone()[0]
+                c.execute("""UPDATE users set edits_left = edits_left + {0} WHERE chat_id = '{1}'""".format(credit_effect, chat_id))
+                c.commit()
+                c.execute("""UPDATE users set credit_code = NULL from users WHERE chat_id = '{0}'""".format(chat_id))
+                c.commit()
+        elif msg['text'] == 'اضافه کردن تعداد رنگی کردن های باقی مانده':
+            c.execute("""SELECT credit_code from users WHERE chat_id = '{0}'""".format(chat_id))
+            if c.fetchone() is not None:
                 c.execute("""SELECT credit_code_effect from users WHERE chat_id = '{0}'""".format(chat_id))
                 credit_effect = c.fetchone()[0]
                 c.execute("""UPDATE users set edits_left = edits_left + {0} WHERE chat_id = '{1}'""".format(credit_effect, chat_id))
