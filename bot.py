@@ -3,7 +3,7 @@ import asyncio
 import telepot
 from telepot.aio.loop import MessageLoop
 from telepot.aio.delegate import pave_event_space, per_chat_id, create_open
-from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
+from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from PIL import Image
 from psycopg2.pool import ThreadedConnectionPool
 
@@ -79,7 +79,8 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 keyboard=[
                     [KeyboardButton(text='تعداد رنگی کردن های باقی مانده'),
                      KeyboardButton(text='لینک دعوت دوستان'),
-                     KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده')]
+                     KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده'),
+                     KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
                 ]
             ))
         elif msg['text'][:6] == '/start':
@@ -112,6 +113,8 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
                 credit_effect = c.fetchone()[0]
                 c.execute("""UPDATE users set edits_left = edits_left + {0},credit_code=NULL,credit_code_effect=0 WHERE chat_id = '{1}'""".format(credit_effect, chat_id))
                 conn.commit()
+        elif msg['text'] == 'غیر فعال کردن دکمه ها و استفاده از دستورات':
+            await bot.sendMessage(chat_id, text='دستورات فعال شدند', reply_markup=ReplyKeyboardRemove)
 
 
     def _decrease_remaining_edits(self, chat_id):
