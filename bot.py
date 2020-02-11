@@ -75,12 +75,12 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
     async def handle_text(self, chat_id, msg):
         if msg['text'] == '/start':
             self._register(str(chat_id))
-            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
+            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید با ارسال عکس به صورت عادی ما عکس رنگی را برای شما ارسال می کنیم', reply_markup=ReplyKeyboardMarkup(
                 keyboard=[
-                    [KeyboardButton(text='تعداد رنگی کردن های\n باقی مانده')],
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده')],
                     [KeyboardButton(text='لینک دعوت دوستان')],
-                    [KeyboardButton(text='اضافه کردن تعداد \nرنگی کردن های باقی مانده')],
-                    [KeyboardButton(text='غیر فعال کردن دکمه ها\n و استفاده از دستورات')]
+                    [KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده')],
+                    [KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
                 ],
                 resize_keyboard=True
             ))
@@ -88,13 +88,14 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._register(str(chat_id))
             inviter_chat_id = msg['text'][7:]
             self._add_credit(inviter_chat_id)
-            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
+            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید با ارسال عکس به صورت عادی ما عکس رنگی را برای شما ارسال می کنیم', reply_markup=ReplyKeyboardMarkup(
                 keyboard=[
-                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده'),
-                     KeyboardButton(text='لینک دعوت دوستان'),
-                     KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده'),
-                     KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
-                ]
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده')],
+                    [KeyboardButton(text='لینک دعوت دوستان')],
+                    [KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده')],
+                    [KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
+                ],
+                resize_keyboard=True
             ))
             await bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
         elif msg['text'] == '/edits_left' or msg['text'] == 'تعداد رنگی کردن های باقی مانده':
@@ -124,13 +125,14 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
         elif msg['text'] == 'غیر فعال کردن دکمه ها و استفاده از دستورات':
             await bot.sendMessage(chat_id, text='دستورات فعال شدند', reply_markup=ReplyKeyboardRemove())
         elif msg['text'] == '/activate_keyboard':
-            await bot.sendMessage(chat_id, 'دکمه ها فعال شدند', reply_markup=ReplyKeyboardMarkup(
+            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید با ارسال عکس به صورت عادی ما عکس رنگی را برای شما ارسال می کنیم', reply_markup=ReplyKeyboardMarkup(
                 keyboard=[
-                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده'),
-                     KeyboardButton(text='لینک دعوت دوستان'),
-                     KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده'),
-                     KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
-                ]
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده')],
+                    [KeyboardButton(text='لینک دعوت دوستان')],
+                    [KeyboardButton(text='اضافه کردن تعداد رنگی کردن های باقی مانده')],
+                    [KeyboardButton(text='غیر فعال کردن دکمه ها و استفاده از دستورات')]
+                ],
+                resize_keyboard=True
             ))
 
 
