@@ -83,6 +83,20 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             await bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
         elif msg['text'] == '/edits_left':
             await bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
+        elif msg['text'][:11] == '/add_credit':
+            credit_code = msg['text'][12:]
+            conn = db_tcp.getconn()
+            c = conn.cursor()
+            c.execute("""SELECT credit_code from users WHERE chat_id = '{0}'""".format(chat_id))
+            actual_credit_code = c.fetchone()[0]
+            if credit_code == actual_credit_code:
+                c.execute("""SELECT credit_code_effect from users WHERE chat_id = '{0}'""".format(chat_id))
+                credit_effect = c.fetchone()[0]
+                c.execute("""UPDATE users set edits_left = edits_left + {0} WHERE chat_id = '{1}'""".format(credit_effect, chat_id))
+                c.commit()
+                c.execute("""UPDATE users set credit_code = NULL from users WHERE chat_id = '{0}'""".format(chat_id))
+                c.commit()
+
 
     def _decrease_remaining_edits(self, chat_id):
         conn = db_tcp.getconn()
