@@ -77,8 +77,8 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._register(str(chat_id))
             await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
                 keyboard=[
-                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده', request_contact='/edits_left'),
-                     KeyboardButton(text='لینک دعوت دوستان', request_contact='/invitation_link')]
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده'),
+                     KeyboardButton(text='لینک دعوت دوستان')]
                 ]
             ))
         elif msg['text'][:6] == '/start':
@@ -87,9 +87,9 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
             self._add_credit(inviter_chat_id)
             await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
             await bot.sendMessage(inviter_chat_id, 'اعتبار شما با دعوت افزایش یافت و به {0} تغییر پیدا کرد.'.format(self._get_edits_left(inviter_chat_id)))
-        elif msg['text'] == '/edits_left':
+        elif msg['text'] == '/edits_left' or msg['text'] == 'تعداد رنگی کردن های باقی مانده':
             await bot.sendMessage(chat_id, str(self._get_edits_left(chat_id)))
-        elif msg['text'] == '/invitation_link':
+        elif msg['text'] == '/invitation_link' or 'لینک دعوت دوستان':
             bot.sendMessage(chat_id, 'https://telegram.me/{0}?start={1}'.format(BOT_NAME, chat_id))
         elif msg['text'][:11] == '/add_credit':
             credit_code = msg['text'][12:]
