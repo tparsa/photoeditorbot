@@ -82,3 +82,5 @@
     - id bigserial primary key
     - chat_id text
     - edits_left int
+    - credit_code text
+    - credit_code_effect int
