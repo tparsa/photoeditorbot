@@ -3,6 +3,7 @@ import asyncio
 import telepot
 from telepot.aio.loop import MessageLoop
 from telepot.aio.delegate import pave_event_space, per_chat_id, create_open
+from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton
 from PIL import Image
 from psycopg2.pool import ThreadedConnectionPool
 
@@ -74,7 +75,11 @@ class PhotoEditor(telepot.aio.helper.ChatHandler):
     async def handle_text(self, chat_id, msg):
         if msg['text'] == '/start':
             self._register(str(chat_id))
-            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید')
+            await bot.sendMessage(chat_id, 'به بات رنگی کننده عکس خوش آمدید', reply_markup=ReplyKeyboardMarkup(
+                keyboard=[
+                    [KeyboardButton(text='تعداد رنگی کردن های باقی مانده', request_location='/edits_left')]
+                ]
+            ))
         elif msg['text'][:6] == '/start':
             self._register(str(chat_id))
             inviter_chat_id = msg['text'][7:]
